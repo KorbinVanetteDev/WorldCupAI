@@ -1,21 +1,30 @@
-# YouTube Script: I Built an AI to Predict the World Cup and It's Unhinged
+# YouTube Script: I Made an AI Predict the Entire World Cup and It's Unhinged
 ### Style: Michael Reeves | Target: Gen Z | Runtime: ~10–12 min
+
+---
+
+## THUMBNAIL
+
+![Thumbnail](video/01_thumbnail.png)
+
+> **A/B test options:**
+> 1. Your face photoshopped in looking horrified with "ENGLAND??" in red over the bracket
+> 2. Bracket image alone with "The AI Broke Football"
+> 3. Before/After split: "Me before training the AI" (confident) / "Me after" (horror)
 
 ---
 
 ## METADATA
 
-**Title options:**
+**Title options (pick most algorithm-friendly):**
 - *I Made an AI Predict the Entire World Cup and It's Completely Delusional*
 - *I Trained a Neural Network on Football and It Chose Violence*
 - *This AI Predicted the 2026 World Cup and I Kind of Hate It*
 
-**Thumbnail:** You looking confused/horrified next to a bracket showing England
-winning, with "ENGLAND??" in big red text and a brain exploding emoji
-
-**Hook for algorithm:** "I built an AI that simulated every single World Cup match.
-72 group games. 31 knockout matches. One champion. It's England. I'm as upset
-as you are."
+**Description hook:**
+> I built an AI that simulated every single World Cup match. 72 group games.
+> 31 knockout matches. One champion. It's England. I'm as upset as you are.
+> Code: [github link]
 
 ---
 
@@ -65,22 +74,32 @@ normal person.
 videos for the chaos and don't actually care about the code, which is valid,
 here's neural networks in like 45 seconds.
 
-*[Cut to: extremely bad MS Paint diagram of a brain]*
+*[CUT TO — show this graphic on screen]*
 
-**YOU:** Your brain has neurons. Neurons talk to each other. When lots of
-neurons agree on something, you have a thought. Like "I should not eat that"
-or "I should definitely eat that" or "what if England won the World Cup."
+![Neural Network Architecture](video/02b_neural_network_architecture.png)
 
-A neural network does the same thing but with math. You have an input layer —
-that's where the data goes in. You have hidden layers — that's where the
-"thinking" happens, and also where all my bugs live. And you have an output
-layer — that's where the answer comes out.
-
-*[Cut to: actual code briefly]*
-
-**YOU:** See this? This is 128 neurons, then 64, then 32. It looks like a
-funnel. It is a funnel. Information goes in wide and comes out narrow. Like a
+**YOU:** See this? Data goes in the left side. The "thinking" happens in the
+middle — that's the hidden layers. Answer comes out the right side. It's
+basically a funnel. Information goes in wide and comes out narrow. Like a
 brain, but worse and also I made it.
+
+On the left are the five numbers I give it for every match:
+FIFA ranking difference. Goals scored difference. Goals conceded difference.
+Win rate difference. Home advantage.
+
+On the right it spits out two numbers: how many goals each team *should* score.
+We call those expected goals. xG. If you've ever watched football Twitter you've
+seen this number before and hated it.
+
+*[Show team stats chart]*
+
+![Team Stats](video/02_team_stats.png)
+
+**YOU:** This is what the raw data looks like. 48 teams. Each one gets a FIFA
+ranking, an average goals scored, an average goals conceded, a win rate.
+Look at the bottom of this chart. Curacao. Curacao has a 32% win rate and
+averages 0.95 goals per game. That is not a football statistic. That is
+a scheduled loss.
 
 The key thing is the network doesn't start smart. It starts completely stupid.
 It's basically a newborn. You have to *train* it by showing it thousands of
@@ -89,174 +108,132 @@ bite — except the puppy is math and you can't yell at it.
 
 ---
 
-### [PART 3: THE DATA — 3:30]
+### [PART 3: HOW IT PREDICTS SCORES — 3:30]
 
-**YOU:** So to train the network, I needed data. Historical football match data.
-Tens of thousands of games.
+**YOU:** Here's where it gets actually kind of cool. Most prediction models
+just do win/draw/loss. That's boring. I wanted *scores*. I wanted to know it's
+a 3-1, not just "team A wins."
 
-I also needed to actually represent each team as *numbers* because computers
-don't understand "Brazil is vibing right now" or "Argentina is built different."
-They understand arrays. Cold, dead arrays.
+So the neural network outputs expected goals for each team. Then I pull from
+a Poisson distribution to get the actual scoreline.
 
-So for every team I tracked:
-- Their FIFA ranking — which is basically the official "how good are you" number
-- How many goals they score on average per game
-- How many goals they *let in* on average
-- Their win rate over the last two years
+*[CUT TO — show this on screen]*
 
-*[Show the team database briefly]*
+![Poisson Distribution Explainer](video/03b_poisson_explainer.png)
 
-**YOU:** This is all 48 teams. Look at this. Curacao has a 32% win rate and
-averages 0.95 goals per game. That's not a football statistic, that's a cry
-for help.
+*[Alternative data version:]*
 
-And then there's the hosts — USA, Canada, Mexico — who get a little home
-advantage boost because, scientifically, playing in front of your own fans
-makes you slightly less bad.
+![Poisson Distribution Chart](video/03_poisson_distribution.png)
 
----
+**YOU:** Poisson is this statistical distribution that's literally designed for
+modelling random events that happen at a certain rate. Goals in football. Buses
+arriving. Emails from your boss at 11pm. It captures the randomness.
 
-### [PART 4: HOW IT PREDICTS SCORES — 4:45]
-
-**YOU:** Now here's where it gets actually kind of insane. Most prediction
-models just do win/draw/loss. That's boring. I wanted *scores*. I wanted to
-know it's a 3-1, not just "team A wins."
-
-So instead of classifying outcomes, my neural network outputs two numbers:
-*expected goals* for each team. Statisticians call this xG. It's basically
-"how many goals should this team have scored based on the quality of their
-chances."
-
-*[Draw a quick diagram]*
-
-**YOU:** So the model says, okay, based on the ranking difference, goal
-averages, win rates, home advantage — Team A should score about 1.8 goals.
-Team B should score about 0.9.
-
-But then — and this is the fun part — I don't just round those. I pull from
-a **Poisson distribution**.
-
-Poisson is this statistical distribution that's literally designed for
-modelling random events that happen at a certain rate. Goals in football.
-Buses arriving. Emails from your boss at 11pm. It captures the randomness.
-
-So even if the model says "Brazil should score 1.8 goals," they might score 0.
+So even if the model says "Brazil should score 2.1 goals" — they might score 0.
 They might score 4. Because football is stupid and that's kind of the point.
 
-*[Show Poisson distribution graph briefly]*
-
-**YOU:** This is what makes the predictions interesting. The model isn't
-deterministic. Run it twice, you get different scores. Run it a hundred times,
-you get a distribution of outcomes. That's actually how professional sports
-models work. Monte Carlo simulation. They run it like 10,000 times and take
-the average.
+The model isn't deterministic. Run it twice, you get different scores.
+That's actually how professional sports models work — they run it like 10,000
+times and take the average.
 
 I ran it once. For content.
 
 ---
 
-### [PART 5: THE LEARNING CURVE — 6:15]
+### [PART 4: THE LEARNING CURVE — 5:00]
 
 **YOU:** Before we get to the actual predictions — and oh, they are something —
-let me show you the learning curve because I think this part is genuinely cool
-and nobody ever shows this.
+let me show you the learning curve because I think this part is actually kind of
+beautiful and nobody ever shows it.
 
-*[Show the learning curve graph]*
+*[CUT TO — show this graphic, ideally animated from left to right]*
 
-**YOU:** This green line is the training error. This is how wrong the model
-is on data it's *already seen*. The red dashed line is the cross-validation
-error — how wrong it is on data it's *never seen*. 
+![Learning Curve](video/05_learning_curve.png)
 
-When you start with almost no training data, over here on the left, both lines
-are all over the place. The model is basically guessing. It's me at a pub quiz
-at round one.
+**YOU:** The green line is how wrong the model is on data it's *already seen*.
+The red line is how wrong it is on data it's *never seen*.
 
-As you add more data, both lines go down. The model gets smarter. By the end,
-the training error and the validation error are basically touching, which means
-the model is *generalising* — it's actually learned the pattern, not just
-memorised the training data.
+When you start with barely any training data, over here on the left, both lines
+are a mess. The model is guessing. It's me at a pub quiz at round one.
 
-The gap between those two lines? That's the generalisation gap. Ours is 0.003
-expected goals. That is extremely good. I did not expect that. I was prepared
-to be embarrassed.
+As you add more data, both lines go down. The model gets smarter. By the end —
+look at this — the training error and the validation error are basically
+touching. That gap is 0.003 expected goals. That means the model generalised.
+It actually *learned* the pattern instead of just memorising the training data.
 
-Also the loss goes to basically zero in under 100 epochs of training. The thing
-learned fast. Suspiciously fast. I'm choosing to take credit for that.
+The right chart shows it converged in under 100 epochs. Trained fast.
+Suspiciously fast. I'm taking credit for this.
 
 ---
 
-### [PART 6: THE GROUP STAGE — 7:15]
+### [PART 5: THE GROUP STAGE — 6:30]
 
-*[Dramatic music. Pull up the group tables.]*
+*[Dramatic music sting. Cut to group tables graphic.]*
+
+![Group Stage Standings](video/04_group_stage_standings.png)
 
 **YOU:** Okay. Let's talk about what actually happened.
 
-72 matches. Every group, every game. And immediately the AI chose violence.
+72 matches. Every group, every game. And immediately the AI decided to
+disrespect everyone.
 
-*[Highlight Group B]*
+*[Zoom to Group B — Switzerland]*
 
-**YOU:** Switzerland. *Switzerland.* Won every single group game. Flawless.
-9 points, 6 goals scored, zero conceded. Perfect record. Switzerland!
-The country famous for cheese, watches, and *being neutral in everything*
-just absolutely cooked Italy, Canada, and Qatar.
+**YOU:** Switzerland. *Switzerland.* Won every single group game. 9 points.
+6 goals scored. Zero — *zero* — conceded. Perfect record. Switzerland!
+The country famous for cheese, watches, and being neutral in *everything*
+just absolutely cooked Italy, Canada, and Qatar without letting a single
+goal in. I don't know what to say about this.
 
-*[Highlight Group G]*
+*[Zoom to Group G — Iran]*
 
-**YOU:** Group G. Belgium, Iran, Egypt, New Zealand. The AI decided **Iran
-tops the group**. With 7 points. Iran! Ahead of Belgium! Belgium, who's been
-in the top 10 in the world for like a decade, got knocked out in the group
-stage. I looked at this output and I said "okay, what are you doing" and it
-just stared at me.
+**YOU:** Group G. Belgium is in this group. Belgium, ranked 6th in the world,
+one of the best teams on the planet. And the AI decided... Iran tops the group.
+With 7 points. Ahead of Belgium. Iran! 
 
-*[Highlight Group E]*
+I looked at this and said "okay what are you doing" and it just stared at me.
 
-**YOU:** Germany wins Group E with a perfect record. 9 points, 8 goals, zero
-conceded. That I believe. Germany in a World Cup group stage is just Germany
-doing normal Germany things.
+*[Zoom to Group E — Germany]*
 
-*[Highlight biggest upsets]*
-
-**YOU:** The craziest group result though? Japan. Japan tops their group,
-beats Netherlands, beats Poland. And then in the Round of 32 — I'm not joking —
-Japan beats Mexico. Japan eliminates the host nation. In round one. Mexico,
-playing in front of their own fans, at the Azteca, and they lose to Japan 1-0.
-
-The AI has decided Mexico's home advantage is not enough. The AI does not care
-about the Azteca. The AI grew up watching anime.
+**YOU:** Germany wins Group E with a perfect record too. 9 points, 8 goals,
+zero conceded. That one I believe. Germany in a group stage is just Germany
+doing normal German things. Very efficient. Very thorough.
 
 ---
 
-### [PART 7: THE KNOCKOUT BRACKET — 8:30]
+### [PART 6: THE KNOCKOUT CHAOS — 7:45]
 
-*[Show the bracket PNG]*
+*[Cut to upset highlights graphic]*
 
-**YOU:** Okay so this is the bracket. This is what it looks like when you let
-a neural network run a sports tournament. Look at it. It's beautiful. It's
-cursed. It's both.
+![Upset Highlights](video/06_upset_highlights.png)
 
-The big ones:
+**YOU:** Okay so here's where it gets unhinged. The Round of 32 results.
 
-**Ecuador.** Ecuador made the *Final*. They come in as a 21st-ranked team,
-they beat South Korea, they beat Netherlands — Netherlands, people — they beat
-Brazil in the semi-finals in extra time. Gooooone. Brazil, 5-time World
-Cup champions, out in the semis, 1-0 after extra time, because Ecuador
-apparently read a different script than everyone else.
+*[Cut to full knockout results]*
 
-*[Zoom in on the semi-final bracket]*
+![Knockout Results](video/07_knockout_results.png)
 
-**YOU:** And the other semi-final. Senegal. Senegal gets out of the group stage
-as a second-place team, and then just starts sending people home. They beat
-Portugal 1-0. They beat Argentina 1-0 in the quarters. They beat France — wait
-sorry — no, England beat France, then England beat Senegal in the semis 2-0.
-The AI is respecting Senegal a lot more than your bracket does.
+**YOU:** Japan. Japan beats Mexico in the Round of 32. 1-0. Japan eliminates
+the host nation. At home. Mexico, playing at the Azteca, one of the most
+iconic football stadiums on the planet, in front of their own fans — and they
+lose to Japan.
 
-Actually let me be real with you. Senegal reaching the semi-finals of the World
-Cup is not that crazy. They were in the quarters in Qatar. The AI might
-actually be onto something here.
+The AI does not care about the Azteca. The AI grew up watching anime.
+
+And then it gets more chaotic. Ecuador. Ecuador are ranked 21st in the world.
+They beat Switzerland in the Round of 32. They beat Netherlands in the Round of
+16 — Netherlands! They beat Brazil in the semi-finals in extra time.
+
+Brazil. Five-time world champions. Out in the semis. To Ecuador.
+
+And Senegal. Senegal gets out of the group stage and just starts sending people
+home. They beat Portugal 1-0. They beat Argentina 1-0 in the quarters.
+Argentina. The actual reigning World Cup champions. Out. 1-0. To Senegal.
+The AI looked at Argentina's squad, calculated their xG, and said "no thank you."
 
 ---
 
-### [PART 8: THE FINAL — 9:30]
+### [PART 7: THE FINAL — 9:00]
 
 *[Dramatic pause. Long stare into camera.]*
 
@@ -264,94 +241,98 @@ actually be onto something here.
 
 Ecuador. Versus England.
 
-Two nations with very different relationships to winning the World Cup.
-Ecuador has never won it. England won it in 1966, which was 60 years ago, and
-has been emotionally recovering since.
+*[CUT TO — full screen final scoreline]*
 
-The AI says: England. 3-1. In 90 minutes. No extra time, no penalties.
-Just England scoring three goals and walking away.
+![Final Scoreline](video/08_final_scoreline.png)
+
+**YOU:** England. 3-1. In 90 minutes. No extra time, no penalties. Just England
+scoring three goals against Ecuador and lifting the World Cup.
 
 *[Beat.]*
 
-**YOU:** I want to be upset about this. I want to sit here and say "the AI is
-wrong, this is obviously wrong." But here's the thing. England are ranked 4th
-in the world. They have a 71% win rate. They score 1.9 goals a game and
-concede less than 1. On paper, England winning a World Cup is not insane.
-It's statistically reasonable.
+**YOU:** I want to be upset about this. I want to sit here and say the AI is
+wrong. But here's the thing. England are ranked 4th in the world. They have a
+71% win rate. They score 1.9 goals a game. On paper, England winning a World
+Cup is not insane. It's statistically reasonable.
 
-It's just *England*.
+It's just. *England.*
 
-*[Stare at camera]*
-
-**YOU:** The AI doesn't know about 1966. The AI doesn't know about penalty
-shootouts. The AI doesn't have trauma. The AI has never watched England play
-in a tournament and felt that specific feeling of hope being slowly excavated
-from your chest. The AI just sees numbers, and the numbers say England.
+The AI doesn't know about 1966. The AI doesn't know about penalty shootouts.
+The AI has never watched England play in a tournament and felt that specific
+feeling of hope being slowly excavated from your chest. The AI just sees
+numbers. And the numbers say England.
 
 *[Sigh]*
 
-**YOU:** Brazil gets third place, by the way. Brazil beats Senegal 2-1 in the
-third place match. So at least they get a trophy. Sort of.
+**YOU:** Brazil gets third, by the way. They beat Senegal 2-1 in the third
+place match. So at least they get a trophy. Sort of.
 
 ---
 
-### [PART 9: LIMITATIONS AND REAL TALK — 10:30]
+### [PART 8: THE FULL BRACKET — 10:00]
 
-**YOU:** Now look. Is this going to be right? Probably not exactly. A neural
-network trained on stats and rankings can't predict injuries, can't predict
-the referee being cooked, can't predict Kylian Mbappé waking up and deciding
-it's his World Cup today.
+*[Full screen bracket reveal — hold for 5+ seconds]*
 
-Sports prediction is genuinely one of the hardest problems in machine learning.
-The best models in the world — used by actual betting companies with millions
-of dollars on the line — get football predictions right maybe 50% of the time.
-My model, trained on synthetic data in a Jupyter notebook at whatever time it
-was, is not beating the betting companies.
+![Full 32-Team Knockout Bracket](video/09_knockout_bracket.png)
 
-But here's the thing — and I mean this genuinely — the *process* is what's
-interesting. Building a system that can take 48 teams' worth of data, simulate
-72 group matches, rank the best third-place finishers, seed a 32-team bracket
-without same-group rematches, and spit out a full tournament in 12 seconds?
-That's actually kind of insane that a relatively small piece of code can do
-that.
+**YOU:** This is the bracket. This is what it looks like when you let a neural
+network run a sports tournament. Every team that qualified from the group
+stage. Every match. Every result. One champion.
 
-The neural network trained in under 100 epochs. The learning curve showed
-genuine generalisation — the model wasn't just memorising, it was learning
-patterns. The Poisson sampling adds realistic randomness that pure win/loss
-models miss.
+Screenshot this. Come back in June. If England lifts the trophy, you're
+welcome. If Ecuador is somehow in the Final, you're welcome. If France wins
+and none of this happened, that's on the AI. I'm just the messenger.
 
-It's not going to be right. But it's going to be *interesting* to watch.
+---
+
+### [PART 9: LIMITATIONS AND REAL TALK — 10:45]
+
+**YOU:** Okay, real talk for a second because I think this is important.
+
+Is this going to be right? Probably not exactly. A neural network trained on
+stats can't predict injuries. Can't predict a referee having a nightmare.
+Can't predict Mbappe deciding it's *his* World Cup.
+
+The best models in the world — used by betting companies with millions on the
+line — get football right maybe 50% of the time. My model, trained in a
+Jupyter notebook, is not beating those.
+
+But the *process* is what's interesting. The model trained in under 100 epochs.
+The generalisation gap was 0.003 expected goals — it actually learned patterns,
+not just memorised data. The Poisson sampling means every run gives different
+scores, which is realistic. Football is random. Good models capture that
+randomness.
+
+And the fact that a few hundred lines of Python can ingest 48 teams' worth of
+data, simulate 72 group matches, rank the best third-place finishers, seed a
+32-team cross-group bracket, simulate 31 knockout matches, and spit out a full
+champion in about 12 seconds — that's honestly kind of crazy.
 
 ---
 
 ### [OUTRO — 11:30]
 
-**YOU:** So. England wins the 2026 World Cup. Ecuador is the dark horse.
+**YOU:** So: England wins the 2026 World Cup. Ecuador is the dark horse.
 Senegal breaks your bracket. Germany is boringly good. Switzerland is
 inexplicably perfect. Iran beats Belgium. Japan beats Mexico. Brazil gets
 third place.
 
-Screenshot your bracket now. When England lifts the trophy and you had them
-winning, you're welcome. When Ecuador reaches the final and your friends are
-losing their minds, you're welcome. When literally none of this happens and
-France wins in three weeks? That's on the AI. I'm just the messenger.
-
 The code is on GitHub, link in the description. You can run it yourself.
-Change the random seed, get completely different results. That's kind of
-the point — there's a range of plausible outcomes, and this is one of them.
+Change the random seed, get completely different results. Run it a hundred
+times and you'll see a distribution of outcomes. That's actually how the
+pros do it — this is literally Monte Carlo simulation.
 
-If you want to see me do something equally unhinged with a different sport,
-or if you want to see me improve this model with actual real historical data
-instead of synthetically generated stuff — subscribe. Like. Leave a comment
-telling me which team you think the AI is most wrong about.
+If you want to see me do this for a different sport, or improve this model
+with actual real historical match data — subscribe. Like. Drop a comment
+telling me which prediction you think is most delusional.
 
-My money's on the AI being completely delusional about Iran. We'll see in
-June.
+My money's on Iran topping Group G being the thing that ages the worst.
+But you never know.
 
 *[Walk off camera. Come back.]*
 
-**YOU:** Also Curacao is going 0-3 in the group stage with zero goals scored
-and ten conceded. That part I believe 100%. That part the AI got right.
+**YOU:** Also Curacao goes 0-3 with zero goals scored and ten conceded in
+the group stage. That part I believe 100%. The AI got that one right.
 
 *[Walk off again.]*
 
@@ -359,42 +340,42 @@ and ten conceded. That part I believe 100%. That part the AI got right.
 
 ## PRODUCTION NOTES
 
-**Pacing:**
-- This runs 10–12 minutes at a conversational pace — don't rush the comedic
-  beats, let the pauses land
-- The "I know. I know." cold open pause should be at least 3 full seconds
+### Pacing
+- The "I know. I know." cold open pause should be at least **3 full seconds** — let it breathe
+- The bracket reveal (Part 8) should hold on screen for **5+ seconds** before you speak
+- Quick cuts between the upset highlights, slower pace on the Final section
 
-**B-Roll suggestions:**
-- The notebook running in the terminal (real-time simulation output scrolling)
-- The bracket PNG being generated (screen record + zoom to champion box)
-- The learning curve graph with a slow zoom from the chaos on the left to the
-  convergence on the right
-- Quick cuts between team flags when mentioning upsets
-- The Poisson distribution animation (a few frames of the distribution shifting)
+### On-screen text moments
+- `0.003 xG generalisation gap` — flash on screen as a stat card
+- `SWITZERLAND PERFECT RECORD: 9pts, 0 conceded` — big text overlay
+- `IRAN TOPS GROUP G` — red text, horror music sting
+- `JAPAN 1–0 MEXICO` — same energy, freeze frame
+- `ECUADOR → FINAL` — track this journey across rounds
 
-**On-screen text moments:**
-- "0.003 xG generalisation gap" — flash on screen when you mention it
-- "SWITZERLAND PERFECT RECORD" — big text overlay
-- "IRAN TOPS GROUP G" — red text, horror music sting
-- "JAPAN BEATS MEXICO 1-0" — same energy
-- The Final scoreline: **ECUADOR 1 – 3 ENGLAND** in massive text
+### Graphics usage guide
 
-**Tone calibration:**
-- You're not angry, you're *bewildered*. The AI is a force of nature. You built
-  it and now you have to live with what it decided.
-- The England reveal in the cold open should feel like a confession, not a
-  celebration
-- When you explain the technical stuff, you're explaining it *to yourself* as
-  much as to the audience — you're figuring it out out loud
+| Graphic | File | When to show |
+|---------|------|-------------|
+| Thumbnail | `video/01_thumbnail.png` | YouTube thumbnail |
+| Neural net diagram | `video/02b_neural_network_architecture.png` | Part 2 explainer |
+| Team stats chart | `video/02_team_stats.png` | Part 2, data section |
+| Poisson (illustrated) | `video/03b_poisson_explainer.png` | Part 3 concept |
+| Poisson (data chart) | `video/03_poisson_distribution.png` | Part 3 deeper dive |
+| Group standings | `video/04_group_stage_standings.png` | Part 5, full groups |
+| Learning curve | `video/05_learning_curve.png` | Part 4 tech section |
+| Upset highlights | `video/06_upset_highlights.png` | Part 6 opening |
+| Knockout results | `video/07_knockout_results.png` | Part 6 full rounds |
+| Final scoreline | `video/08_final_scoreline.png` | Part 7 reveal |
+| Full bracket | `video/09_knockout_bracket.png` | Part 8 full screen |
 
-**Thumbnail A/B test ideas:**
-1. Your face + "ENGLAND WON??" in red over the bracket
-2. Bracket image alone with "The AI Broke Football"
-3. Side-by-side of you looking confident vs you looking horrified with
-   "Before training" / "After training" labels
+### B-Roll suggestions
+- The notebook running in terminal — real-time simulation output scrolling fast
+- The bracket PNG being generated — screen record the Python cell executing
+- Learning curve animation — zoom slowly from left (chaos) to right (convergence)
+- Quick cuts between team flags during the upset section
+- The `world_cup_2026_bracket.png` being opened in a file manager dramatically
 
 ---
 
-*Generated to accompany: `world_cup_2026_predictor.ipynb`*
-*Predictions based on seed 2026, run May 2026*
-*Champion: England | Runner-up: Ecuador | 3rd: Brazil*
+*All predictions generated by `world_cup_2026_predictor.ipynb` | Seed: 2026*
+*Champion: England 🏴󠁧󠁢󠁥󠁮󠁧󠁿 | Runner-up: Ecuador 🇪🇨 | 3rd: Brazil 🇧🇷*
